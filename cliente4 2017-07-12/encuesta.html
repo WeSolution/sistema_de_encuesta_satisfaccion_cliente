@@ -1,0 +1,195 @@
+<!--=====================================
+=            INFORMACIÓN            =
+======================================-->
+<!--
+	AUTOR: ING. OSCAR BONILLA RODRIGUEZ
+	FECHA: 2017-07
+-->
+<!--====  End of INFORMACIÓN  ====-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Encuesta</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="./style.css" />
+	<link rel="icon" type="image/png" href="./miLogoOz.ico" />
+
+</head>
+<body>
+	<div class="container" id="container2">
+		<div class="row">
+			<div class="col-xs-12 col-sm-12 col-md-12">
+				<div class="page-header text-center text-success">
+					<img src="l.png" style="height:260px;width: 250px;">
+					<h1>Prendamex agradece su preferencia.</h1>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 col-sm-12 col-md-4">
+			</div>
+			<div class="col-xs-12 col-sm-12 col-md-4 text-center">
+				<p>Si tuviste algún problema con nustras sucursales presiona <a href="#"> aquí<img src="icono-dununcia-auditoria.png" style="height:100px;width: 100px;"></a></p>
+			</div>
+			<div class="col-xs-12 col-sm-12 col-md-4">
+			</div>
+		</div>
+	</div>
+	<div id="m-c" class="container">
+		
+		<div class="row">
+			<div class="col-xs-12 col-sm-4 col-md-4">
+			</div>
+			<div class="col-xs-12 col-sm-4 col-md-4 text-center" >
+				<img src="l.png" alt="l.png" style="height:100px;">
+			</div>
+			<div class="col-xs-12 col-sm-4 col-md-4">
+			</div>
+		</div>
+
+		<div  class="row">
+			<div class="col-xs-12 col-sm-4 col-md-4">
+			</div>
+			<div class="col-xs-12 col-sm-12 col-md-4 text-center" >
+				<strong><h2 id="pregunta" style="color:black;"></h2></strong>
+			</div>
+			<div class="col-xs-12 col-sm-4 col-md-4">
+			</div>
+		</div>
+		<hr/>
+		<div class="row" id="respuestas">
+			<div class="col-xs-12 col-sm-4 col-md-4">
+				<a href="#" class="thumbnail" >
+				  <img onclick="" src="0.jpg" alt="0.jpg" class="img-0" id = "1">
+				</a>
+			</div>
+			<div class="col-xs-12 col-sm-4 col-md-4">
+				<a href="#" class="thumbnail ">
+				  <img src="1.jpg" alt="1.jpg" class="img-1" id = "2">
+				</a>
+			</div>
+			<div class="col-xs-12 col-sm-4 col-md-4">
+				<a href="#" class="thumbnail ">
+				  <img src="2.jpg" alt="2.jpg" class="img-2" id = "3">
+				</a>
+			</div>
+		</div>
+	</div>	
+	
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12 col-sm-12 col-md-4">
+			</div>
+			<div class="col-xs-12 col-sm-12 col-md-4 text-center">
+				<p>Si tuviste algún problema con nustras sucursales presiona <a href="quejas.html"> <img src="icono-dununcia-auditoria.png" style="height:100px;width: 100px;"></a></p>
+			</div>
+			<div class="col-xs-12 col-sm-12 col-md-4">
+			</div>
+		</div>
+	</div>
+
+	
+	<script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<script type="text/javascript">
+		$('#container2').hide();
+		$(document).ready(function(){
+			$.ajax({
+				url:'controlador.php',
+				data:{accion:'validarSession'},
+				type:'GET',
+				dataType:'json',
+				success:function(json){ (json.resp == 1) ? console.log('logok') : window.location.href='index.html'; },
+				error: function(xhr, status) {console.log(xhr,status);},
+			});
+			/* validar encuesta */
+			var preguntas = [];
+			$.ajax({
+				url:'controlador.php',
+				data:{accion:'buscarPreguntas'},
+				type:'GET',
+				dataType:'json',
+				success:function(json) {
+					json.forEach(function(v){preguntas.push(v);});
+
+					var np = preguntas.length - 1;
+					var i = 0;
+					var respuestas = new Array();
+					$('#pregunta').text('¿' + preguntas[i] + '?');
+					$('#respuestas').click(function(e) {
+						e.preventDefault();
+						var btn = e.target;
+						if(btn.id != '') {
+							clickImg0(btn.id);
+							if(i < np) {
+								i++;
+								respuestas.push({pregunta:i, respuesta:parseInt(btn.id)});
+								if(i==4){
+									$('.img-0').attr({'src':'3.jpg','id':'4'});
+									$('.img-1').attr({'src':'4.jpg','id':'5'});
+									$('.img-2').attr({'src':'5.jpg','id':'6'});
+									$('#respuestas').append('<div class="col-xs-12 col-sm-4 col-md-4 img6"><a class="thumbnail"><img src="6.jpg" alt="6.jpg" id = "7" class="img-6"></a></div>');
+								}
+								$('#pregunta').text('¿' + preguntas[i] + '?');
+							}
+							else {
+								respuestas.push({pregunta:(i+1), respuesta:parseInt(btn.id)});
+								//funcion agregar
+								$('.container').hide();
+								$('#container2').show();
+								agregarEncuesta(respuestas);
+								setTimeout(despedir,3000);
+								respuestas = [];
+							}
+						}
+
+					});
+
+					function agregarEncuesta(r){
+						var jsonR = JSON.stringify(r);
+						$.ajax({
+							url:'controlador.php',
+							data:{ accion:'agregarEncuesta',jsonRespuestas:jsonR },
+							type:'GET',
+							dataType:'json',
+							success: function(json){ console.log(json);},
+							error: function(xhr, status){ console.log(xhr,status);},
+						});
+					}
+
+					function despedir(){
+						$('.container').show();
+						$('#container2').hide();
+						i = 0;
+						$('#pregunta').text('¿' + preguntas[i] + '?');
+						$('.img-0').attr({'src':'0.jpg','id':'1'});
+						$('.img-1').attr({'src':'1.jpg','id':'2'});
+						$('.img-2').attr({'src':'2.jpg','id':'3'});
+						$('.img6').remove();	
+					}
+
+					function clickImg0(id){
+						if(id != '') {
+							/*$('#'+id).fadeToggle();
+							$('#'+id).fadeToggle();*/
+							$('#'+id).animate({ opacity: '0.5' });
+							$('#'+id).animate({ opacity: '1' });
+						}
+					}
+
+				},
+				error: function(xhr, status) {console.log(xhr,status);},
+			});
+			/*BuscarPreguntas*/
+			
+
+		});
+
+	</script>
+	
+</body>
+</html>

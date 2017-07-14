@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Quejas</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="./style.css" />
+	<link rel="icon" type="image/png" href="./miLogoOz.ico" />
+</head>
+<body>
+	<div class="container" style="padding:10px;">
+		<div class="row">
+			<div class="col-xs-12 col-sm-12 col-lg-12">
+				<center><img src="l.png" style="height:200px;width: 200px;"></center>
+				<label for="#" class="text-justify">
+					Lamentamos que hayas tenido una mala experiencia en nuestras sucursales y queremos ayudarte. Si quieres reportar algo que infringe nuestras Normas comunitarias (por ejemplo, lenguaje que incita al odio, violencia, etc.), usa este formulario para enviar lo sucedido y poder brindarte apoyo de inmediato. 
+				</label>
+			</div>
+		</div>
+		<hr />
+		<div class="row">
+			<div class="col-xs-12 col-sm-12 col-lg-12">
+				<form id="formularioQuejas" action="controlador.php" method="GET" class="">
+					<input type="hidden" name="accion" value="nuevaQueja" />
+					<div class="form-group">
+						<label for="txtCategoria">Seleccione una opción</label>
+						<select class="form-control" name="txtCategoria" id="txtCategoria">
+							<option value="0">Selecciona una opcion</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="txtTelefono">Para darle un mejor servicio ingrese su número de teléfono celular o teléfono de casa y nuestro asesores se pondrán en contacto con usted.</label>
+						<input type="number" name="txtTelefono" id="txtTelefono" class="form-control" placeholder="0442222222222 - 2222222" />
+					</div>
+					<div class="form-group">
+						<label for="txtEmail">Ingresa tu correo electrónico</label>
+						<input type="email" name="txtEmail" id="txtEmail" class="form-control" placeholder="mimail@mail.com" />
+					</div>	
+					<div class="form-group">
+						<label for="txtNombreEmpleado">Si conoces el nombre del empleado que dió mal el servicio, ingresalo.</label>
+						<input type="text" name="txtNombreEmpleado" id="txtNombreEmpleado" class="form-control" placeholder="Juan Pérez" />
+					</div>
+					<div class="form-group">
+						<label for="txtDescripcion">Ingrese una pequeña descripción de lo sucedido por favor.</label>
+						<textarea class="form-control" name="txtDescripcion" id="txtDescripcion" rows="5" placeholder="La atención de la persona..."></textarea>
+					</div>
+					<div class="form-group">
+						<input id="btnEnviarQueja" class="btn btn-success btn-block btn-lg" type="submit" value="Enviar queja" />
+						<a href="encuesta.html" class="btn btn-danger btn-block btn-lg">Cancelar</a>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>	
+	<script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$.ajax({
+				url:'controlador.php',
+				data:{accion:'validarSession'},
+				type:'GET',
+				dataType:'json',
+				success: function(json){ (json.resp == 1) ? console.log('logok') : window.location.href='index.html'; },
+				error:function(xhr, status) {console.log(xhr,status);},
+			});
+			$.ajax({
+				url:'controlador.php',
+				data:{accion:'buscarQuejas'},
+				type:'GET',
+				dataType:'json',
+				success: function(json) {
+					if (json.resp == 1) {
+						json.quejas.forEach( function(v){ $('#txtCategoria').append('<option value="' + v.id + '">' + v.queja + '</option>'); });
+					}
+				},
+				error: function(xhr, status) {console.log(xhr,status);},
+			});
+
+			$('#btnEnviarQueja').click( function(evento) {
+				evento.preventDefault();
+				var categoria = parseInt($('#txtCategoria').val());
+				if(categoria > 0){
+					$('#formularioQuejas').submit();
+				}
+				else{
+					alert('Error: debes de seleccionar una opción de la lista.');
+				}
+			});
+		})
+	</script>
+</body>
+</html>

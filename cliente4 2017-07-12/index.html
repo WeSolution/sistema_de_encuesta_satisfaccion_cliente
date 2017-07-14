@@ -1,0 +1,111 @@
+<!--=====================================
+=            INFORMACIÓN            =
+======================================-->
+<!--
+	AUTOR: ING. OSCAR BONILLA RODRIGUEZ
+	FECHA: 2017-07
+-->
+<!--====  End of INFORMACIÓN  ====-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Encuesta</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="./style.css" />
+	<link rel="icon" type="image/png" href="./miLogoOz.ico" />
+</head>
+<body>
+	
+	<div id="m-c" class="container">
+		<div class="row">
+			<div class="col-xs-12 col-sm-4 col-lg-4"></div>
+			<div class="col-xs-12 col-sm-12 col-lg-4">
+				<div class="panel panel-success">
+					<div class="panel-heading">
+						<p>Sistema de encuestas</p>
+						<p>Para ingresar al sistema de encuestas debes:</p>
+						<ul>
+							<li>Seleccionar una sucursal de la lista desplegable.</li>
+							<li>Presionar el bóton iniciar.</li>
+						</ul>
+					</div>
+					<div class="panel-body">
+						<form action="controlador.php" id="formularioInicial" method="get">
+							<div class="form-group">
+								<label for="cmbSucursal">Seleccionar sucursal</label>
+								<select class="form-control" name="idSucursal" id="cmbSucursal"></select>
+								<input type="hidden" name="accion" id="accion" value="iniciarEncuesta">
+							</div>
+						</form>
+					</div>
+					<div class="panel-footer">					
+						<button id="btnIniciar" class="btn btn-lg btn-block btn-success">Iniciar</button>
+						<center>Administrador presiona <input id="btnAdmin" type="submit" class="btn btn-link" value="aquí">.</center>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-sm-4 col-lg-4"></div>
+		</div>
+	</div>
+
+	
+	<script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>	
+	<script type="text/javascript" src="jquery-3.2.1.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$.ajax({
+				url:'controlador.php',
+				data:{accion:'buscarSucursales'},
+				type:'GET',
+				dataType:'json',
+				success: function(json) {
+					if (json.resp == 1) {
+						json.sucursales.forEach(function(v){ $('#cmbSucursal').append('<option value="' + v.id + '">' + v.sucursal + '</option>'); } );
+					}
+				},
+				error: function(xhr, status) { console.log(xhr,status); },
+			});
+			$('#btnAdmin').click( function(e) {
+				e.preventDefault();
+				var contrasena = 0;
+				contrasena = prompt("Por favor ingresa la clave de administrador y presiona aceptar");
+				if(contrasena != null) {
+					if(contrasena.length > 0){
+						//admin
+						$.ajax({
+							url:'controlador.php',
+							data:{accion:'admin',clave:contrasena},
+							type:'GET',
+							dataType:'json',
+							success: function(json) {
+								console.log(json);
+								if(json.resp == -1){ alert('La clave que ingresaste es incorrecta.'); }
+								else {
+									sessionStorage.setItem('sys',1);
+									//console.log(sessionStorage.getItem('sys'));
+									window.location.href='./miReporteEncuestas.html';
+								} 
+							},
+							error: function(xhr, status){ console.log(xhr,status); },
+						});
+					}
+					else {
+						alert('Necesitas una clave de administrador para ingresar.');
+					}
+				}
+			});
+
+			$('#btnIniciar').click(function(evento){
+				evento.preventDefault();
+				$('#formularioInicial').submit();
+			});
+		})
+	</script>
+</body>
+</html>
